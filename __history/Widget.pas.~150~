@@ -1,0 +1,368 @@
+unit Widget;
+{
+This Widget library unit:
+1.  Provides built-in widgets: Button, Label, Image.
+2.	Provides an ability to instantiate widgets by their types of names by dialog window or config file 'widgets.ini'.
+3.	Provides an ability to extend it with new user-defined widgets in code (i.e., not part of the library)
+4.	Provides grouping (ability to create groups that can contain widgets and groups) - e.g., dialog window
+5.	Provides the ability to attach/detach widgets to/from a group.
+
+}
+interface
+
+uses
+  Generics.Collections,
+  System.Generics.Collections,
+  Classes, Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls,
+  System.SysUtils, System.StrUtils,  Dialogs , IniFiles,
+  System.Diagnostics,
+  System.Generics.Defaults, System.Types,
+  RTTI;
+
+type
+
+  iWidget = interface
+
+  end;
+
+  TWidget = class(TWinControl, iWidget)
+  private
+    instance: TWidget;
+
+  protected
+    class var Count:integer;
+
+  public
+    //constructor Create(control:TWinControl);  overload;
+    //constructor Create(control:TWinControl; typeName:String; var strStatus:String); overload;
+    constructor Create(control:TWinControl; typeName, widgName:String; var strStatus:String); overload;
+
+    destructor Destroy(); override;
+    class var function CreateTypesList(listBox: TListBox):String;
+
+    class var function startsWith(strStart, str: string): boolean;
+    class var procedure saveWidgetIni(widgetName, widgetType:string);
+
+    class var procedure loadWidgetsIni(ListBoxWidgets:TListBox);  overload;
+    class var function loadWidgetsIni(winControl: TWinControl; ListBox:TListBox):string;    overload;
+    class var function loadWidgetsNamesIni(winControl: TWinControl; ComboBox: TComboBox):string;
+    class function loadGroupIni(ListBox:TListBox):string;   overload;
+
+    class function loadGroupWidgetsIni(ListBox:TListBox; groupName:string):string;     overload;
+    class function SaveGroupWidgetsIni(ListBox:TListBox; groupName:string):string;
+
+    class function TrimChar(const Str: string; Ch: Char): string;
+  end;
+
+  TMyButton = class(TButton,iWidget);
+  TMyLabel  = class(TLabel, iWidget);
+
+Const
+  iniFileName='widgets.ini';
+  iniWidgetsSection='widgets';
+  iniWidgetsGroupsSection='widgetsGroups';
+
+
+
+
+implementation
+
+{ TWidget }
+ {
+constructor TWidget.Create(control:TWinControl);
+begin
+  inherited Create(control);
+end;
+ }
+procedure TWidget.saveWidgetIni(widgetName, widgetType:string);
+var
+    Ini: TIniFile;
+begin
+   try
+      ini := TIniFile.Create( iniFileName );
+      //Save the widget Name and Type in INI file
+      ini.WriteString(iniWidgetsSection, widgetName, widgetType);
+
+      ini.UpdateFile;
+
+   finally
+     ini.Free;
+   end;
+
+end;
+
+class function TWidget.loadGroupIni(ListBox: TListBox): string;
+var
+   Ini: TIniFile;
+   stringListGroups: TStringList;
+ begin
+
+   try
+      Ini := TIniFile.Create( iniFileName );
+
+      stringListGroups:=TStringList.Create();
+      Ini.ReadSectionValues(iniWidgetsGroupsSection, stringListGroups);
+      ListBox.Items.Clear;
+      ListBox.Items.AddStrings(stringListGroups);
+
+   finally
+     Ini.Free;
+   end;
+end;
+
+class function TWidget.TrimChar(const Str: string; Ch: Char): string;
+var
+  S, E: integer;
+begin
+  if Length(Str)>0 then
+  begin
+    S:=1;
+    while (S <= Length(Str)) and (Str[S]=Ch) do Inc(S);
+    E:=Length(Str);
+    while (E >= 1) and (Str[E]=Ch) do Dec(E);
+    SetString(Result, PChar(@Str[S]), E - S + 1);
+  end;
+end;
+
+class function TWidget.loadGroupWidgetsIni(ListBox: TListBox; groupName:string): string;
+var
+   Ini: TIniFile;
+
+   strValues, s:String;
+   StringDynArray:TStringDynArray;
+   i:integer;
+ begin
+
+   try
+      Ini := TIniFile.Create( iniFileName );
+
+      groupName:=TrimChar(groupName,'=');
+      groupName:=TrimChar(groupName,',');
+      i:=pos('=', groupName);
+      if i>2 then
+        groupName:=copy(groupName, 1, i-1);
+      strValues:=Ini.ReadString(iniWidgetsGroupsSection, groupName,'') ;
+
+      strValues:=TrimChar(strValues,'=');
+      strValues:=TrimChar(strValues,',');
+
+      StringDynArray:=System.StrUtils.SplitString(strValues, ',');
+      ListBox.Items.Clear;
+      for I := 0 to Length(StringDynArray)-1 do
+        ListBox.Items.Add(StringDynArray[i]);
+
+   finally
+     Ini.Free;
+   end;
+
+end;
+
+function TWidget.loadWidgetsIni(winControl: TWinControl; ListBox:TListBox):string;
+var
+    Ini: TIniFile;
+    stringListWidgets:TStringList;
+    i:integer;
+    widg:TWidget;
+    strStat:String;
+    strName:String;
+    strValue:String;
+begin
+  strStat:='';
+   try
+      ini := TIniFile.Create( iniFileName );
+      //load the widgets Name and Type from INI file
+      stringListWidgets:=TStringList.Create();
+      Ini.ReadSectionValues(iniWidgetsSection, stringListWidgets);
+      for i := 0 to stringListWidgets.Count-1 do
+      begin
+
+        strName:=stringListWidgets.Names[i];
+        strValue:=stringListWidgets.Values[strName];
+        widg:=TWidget.Create(winControl, strValue, strName,
+            strStat);  //for example 'Vcl.StdCtrls.TButton'
+
+      end;
+   finally
+       result:=strStat;
+       ini.Free;
+
+   end;
+
+end;
+
+
+function TWidget.loadWidgetsNamesIni(winControl: TWinControl; ComboBox: TComboBox): string;
+var
+    Ini: TIniFile;
+    stringListWidgets:TStringList;
+    i:integer;
+    widg:TWidget;
+    strStat:String;
+    strName:String;
+    strValue:String;
+begin
+  strStat:='';
+   try
+      ini := TIniFile.Create( iniFileName );
+      //load the widgets Name and Type from INI file
+      stringListWidgets:=TStringList.Create();
+      Ini.ReadSectionValues(iniWidgetsSection, stringListWidgets);
+      for i := 0 to stringListWidgets.Count-1 do
+      begin
+
+        strName:=stringListWidgets.Names[i];
+        strValue:=stringListWidgets.Values[strName];
+        ComboBox.AddItem(strName,nil);
+
+      end;
+   finally
+     ini.Free;
+   end;
+end;
+
+class function TWidget.SaveGroupWidgetsIni(ListBox: TListBox;
+  groupName: string): string;
+var
+    Ini: TIniFile;
+    I: Integer;
+    strWidgets:String;
+begin
+   try
+    Ini := TIniFile.Create( iniFileName );
+
+      if ListBox.items.Count > 0 then
+      begin
+
+        strWidgets:='';
+        for I := 0 to ListBox.items.Count - 1 do
+          if ListBox.items[I] <> '' then
+            strWidgets:=strWidgets + ListBox.items[I] + ',';
+
+        strWidgets:=TrimChar(strWidgets,',');
+
+        ini.WriteString(iniWidgetsGroupsSection,
+              groupName, strWidgets);
+        ini.UpdateFile;
+      end;
+
+   finally
+     Ini.Free;
+   end;
+
+
+end;
+
+procedure TWidget.loadWidgetsIni(ListBoxWidgets:TListBox);
+var
+    Ini: TIniFile;
+    stringListWidgets:TStringList ;
+begin
+   try
+      ini := TIniFile.Create( iniFileName );
+      //load the widgets Name and Type from INI file
+      stringListWidgets:=TStringList.Create();
+      Ini.ReadSectionValues(iniWidgetsSection, stringListWidgets);
+      ListBoxWidgets.Items.AddStrings(stringListWidgets);
+
+   finally
+     ini.Free;
+   end;
+
+end;
+
+
+
+constructor TWidget.Create(control:TWinControl; typeName, widgName: String; var strStatus:String);
+var
+ C : TRttiContext;
+ T : TRttiInstanceType;
+ V : TValue;
+begin
+  inherited Create(control);
+  inc(Count);
+  try
+
+    T := (C.FindType(typeName) as TRttiInstanceType);
+    if T=nil then
+      strStatus:='There was an error: ' + 'this type does not exist.'
+    else
+    begin
+
+      V := T.GetMethod('Create').Invoke(T.metaClassType,[control]);
+      (V.AsObject as TControl).Parent := control;
+      if widgName<>'' then
+        (V.AsObject as TControl).Name := widgName
+      else
+        (V.AsObject as TControl).Name := copy(typeName, LastDelimiter('.', typeName)+2) + IntToStr(Count);  //'Vcl.StdCtrls.TButton'
+      (V.AsObject as TControl).left := 10;
+      (V.AsObject as TControl).top := 10 + (Count-1) * 50;
+      instance:= (V.AsObject as TWidget);
+
+      saveWidgetIni((V.AsObject as TControl).Name, typeName );
+
+    end
+  except on E: Exception do
+       strStatus:='There was an error: ' + E.Message
+  end;
+end;
+
+
+{
+constructor TWidget.Create(control: TWinControl; typeName: String;
+  var strStatus: String);
+begin
+  Create(control, typeName, '', strStatus);
+end;
+}
+
+
+function TWidget.CreateTypesList(listBox: TListBox):String;
+var
+  LContext: TRttiContext;
+  LType: TRttiType;
+
+  T : TRttiInstanceType;
+  C : TRttiContext;
+  startsWith:boolean;
+  i:integer;
+  strStatus:String;
+
+begin
+  LContext := TRttiContext.Create;
+  try
+    for LType in LContext.GetTypes do
+    begin
+        i:=pos('Widget.', LType.QualifiedName);
+        startsWith:=(LType.QualifiedName<>'') and (i=1);
+
+        if startsWith then
+        try
+          T := (C.FindType(LType.QualifiedName) as TRttiInstanceType);
+          listBox.Items.add(LType.QualifiedName);
+        except on E: Exception do
+          strStatus:='There was an error: ' + E.Message;
+
+        end;
+
+    end;
+  finally
+    LContext.Free;
+  end;
+  result:=strStatus;
+end;
+
+destructor TWidget.Destroy;
+begin
+
+  inherited;
+end;
+
+
+
+function TWidget.startsWith(strStart, str: string): boolean;
+
+begin
+  result:= (strStart<>'') and (str<>'') and (pos(strStart, str)=0);
+end;
+
+end.

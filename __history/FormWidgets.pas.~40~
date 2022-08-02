@@ -1,0 +1,165 @@
+unit FormWidgets;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Menus, Vcl.ExtCtrls,
+  RTTI, Vcl.ComCtrls, IniFiles,
+  Widget,
+  FormWidgetsGroups;
+
+type
+  TFormWidget = class(TForm)
+    Panel00: TPanel;
+    StatusBar: TStatusBar;
+    Panel2: TPanel;
+    ListBoxTypes: TListBox;
+    ButtonWidget: TButton;
+    Splitter1: TSplitter;
+    MainMenu1: TMainMenu;
+    Groups1: TMenuItem;
+    ScrollBoxWidgets: TScrollBox;
+    procedure ButtonWidgetClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure Groups1Click(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FormWidget: TFormWidget;
+
+implementation
+
+{$R *.dfm}
+
+
+
+procedure CreateTypesList(listBox: TListBox);
+var
+  LContext: TRttiContext;
+  LType: TRttiType;
+  C : TRttiContext;
+  T : TRttiInstanceType;
+  V : TValue;
+  startsWith:boolean;
+  i:integer;
+  strStatus  :String;
+begin
+  LContext := TRttiContext.Create;
+  try
+    for LType in LContext.GetTypes do
+    begin
+        i:=pos('Widget.', LType.QualifiedName);
+        startsWith:=(LType.QualifiedName<>'') and (i=1);
+
+        if startsWith then
+        try
+          T := (C.FindType(LType.QualifiedName) as TRttiInstanceType);
+          listBox.Items.add(LType.QualifiedName);
+        except on E: Exception do
+          strStatus:='There was an error: ' + E.Message;
+
+        end;
+
+    end;
+  finally
+    LContext.Free;
+  end;
+
+end;
+
+procedure TFormWidget.ButtonWidgetClick(Sender: TObject);
+var
+  widg:TWidget;
+  strStat:String;
+begin
+  widg:=TWidget.Create(ScrollBoxWidgets,
+    ListBoxTypes.Items.Strings[ListBoxTypes.ItemIndex],
+    strStat);  //for example 'Vcl.StdCtrls.TButton'
+  StatusBar.SimpleText:=strStat;
+end;
+
+
+
+procedure TFormWidget.FormClose(Sender: TObject; var Action: TCloseAction);
+var
+    Ini: TIniFile;
+    I: Integer;
+
+   stringListGroups: TStringList;
+   stringListWidgets: TStringList;
+begin
+   try
+      Ini := TIniFile.Create( iniFileName );
+      //Save the last window state
+      Ini.WriteInteger( 'Form', 'Top', Top);
+      Ini.WriteInteger( 'Form', 'Left', Left);
+      //Ini.WriteString( 'Form', 'Caption', Caption );
+      Ini.WriteBool( 'Form', 'InitMax', WindowState = wsMaximized );
+
+      {oneWidget:=TWidget.Create(self);
+      stringListWidgets:=TStringList.Create();
+
+      if oneWidget.GetWidgetsList()<>nil then
+      begin
+        ini.EraseSection(widgetsGroupsSection);
+        for var sKey: String in oneWidget.GetWidgetsList().Keys do
+          if sKey <> '' then
+              ini.WriteString(widgetsGroupsSection, sKey,'');
+
+        ini.UpdateFile;
+      end;
+      }
+   finally
+     Ini.Free;
+   end;
+
+end;
+
+procedure TFormWidget.FormCreate(Sender: TObject);
+var
+    MyButton:TMyButton;
+    MyLabel:TMyLabel;
+    w:TWidget;
+    Ini : TIniFile;
+begin
+  MyButton:=TMyButton.Create(ScrollBoxWidgets);
+  MyLabel:=TMyLabel.Create(ScrollBoxWidgets);
+  w:=TWidget.Create(ScrollBoxWidgets);
+  //CreateTypesList(ListBoxTypes);
+  w.CreateTypesList(ListBoxTypes);
+  w.loadWidgetsIni(ScrollBoxWidgets, ListBoxTypes);
+
+
+
+   try
+      Ini := TIniFile.Create( iniFileName );
+
+     //Initionalize the last window state
+     Top     := Ini.ReadInteger( 'Form', 'Top', 100 );
+     Left    := Ini.ReadInteger( 'Form', 'Left', 100 );
+
+     if Ini.ReadBool( 'Form', 'InitMax', false ) then
+       WindowState := wsMaximized
+     else
+       WindowState := wsNormal;
+
+   finally
+     Ini.Free;
+   end;
+
+end;
+
+procedure TFormWidget.Groups1Click(Sender: TObject);
+begin
+    if FormWidgetsGroup=nil then
+      FormWidgetsGroup:=TFormWidgetsGroup.Create(self);
+    FormWidgetsGroup.Show;
+end;
+
+end.

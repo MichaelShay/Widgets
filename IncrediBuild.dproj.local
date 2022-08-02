@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>1899.12.30 00:00:00.000.329,D:\uses\dev\Delphi\incrediBuild\task03\Unit1.dfm=D:\uses\dev\Delphi\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.629,D:\uses\dev\Delphi\incrediBuild\task03\Unit2.dfm=D:\uses\dev\Delphi\incrediBuild\task03\WidgetsGroups.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.227,D:\uses\dev\Delphi\incrediBuild\task03\WidgetsGroups.pas=D:\uses\dev\Delphi\incrediBuild\task03\FormWidgetsGroups.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.609,D:\uses\dev\Delphi\incrediBuild\task03\Unit2.pas=D:\uses\dev\Delphi\incrediBuild\task03\WidgetsGroups.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.567,D:\uses\dev\Delphi\incrediBuild\task03\Unit1.dfm=D:\uses\dev\Delphi\incrediBuild\task03\FormWidgets.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.415,D:\uses\dev\Delphi\incrediBuild\task03\Widget.pas=D:\uses\dev\Delphi\incrediBuild\task03\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.380,D:\uses\dev\Delphi\incrediBuild\task03\Group.pas=D:\uses\dev\Delphi\incrediBuild\task03\FormGroups.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.129,D:\uses\dev\Delphi\incrediBuild\task03\Group.pas=D:\uses\dev\Delphi\incrediBuild\task03\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.953,D:\uses\dev\Delphi\incrediBuild\task03\IncrediBuild.dproj=D:\uses\dev\Delphi\Project1.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.689,=D:\uses\dev\Delphi\incrediBuild\task03\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.129,D:\uses\dev\Delphi\incrediBuild\task03\Group.dfm=D:\uses\dev\Delphi\incrediBuild\task03\Unit2.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.380,D:\uses\dev\Delphi\incrediBuild\task03\Group.dfm=D:\uses\dev\Delphi\incrediBuild\task03\FormGroups.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.329,D:\uses\dev\Delphi\incrediBuild\task03\Unit1.pas=D:\uses\dev\Delphi\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.567,D:\uses\dev\Delphi\incrediBuild\task03\Unit1.pas=D:\uses\dev\Delphi\incrediBuild\task03\FormWidgets.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.172,=D:\uses\dev\Delphi\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.908,=D:\uses\dev\Delphi\incrediBuild\task03\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.024,=D:\uses\dev\Delphi\incrediBuild\task03\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.975,=D:\uses\dev\Delphi\incrediBuild\task03\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.227,D:\uses\dev\Delphi\incrediBuild\task03\WidgetsGroups.dfm=D:\uses\dev\Delphi\incrediBuild\task03\FormWidgetsGroups.dfm</Transaction>
+  </Transactions>
+</BorlandProject>

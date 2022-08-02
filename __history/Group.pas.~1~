@@ -1,0 +1,33 @@
+unit Group;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Mask, Vcl.ExtCtrls;
+
+type
+  TFormGroup = class(TForm)
+    Panel1: TPanel;
+    LabeledEdit1: TLabeledEdit;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    ListBox1: TListBox;
+    ComboBoxWidgets: TComboBox;
+    Label1: TLabel;
+    ButtonAddWidget: TButton;
+    ButtonSave: TButton;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FormGroup: TFormGroup;
+
+implementation
+
+{$R *.dfm}
+
+end.

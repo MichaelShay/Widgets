@@ -1,0 +1,154 @@
+unit WidgetsGroups;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, IniFiles,
+  Widget,
+  FormGroups, Vcl.ComCtrls;
+
+type
+  TFormWidgetsGroups = class(TForm)
+    Panel1: TPanel;
+    Splitter1: TSplitter;
+    Panel2: TPanel;
+    ListBoxWidgets: TListBox;
+    Panel3: TPanel;
+    Panel4: TPanel;
+    ButtonAddGroup: TButton;
+    LabelGroupName: TLabel;
+    EditGroupName: TEdit;
+    Splitter2: TSplitter;
+    ListBoxGroups: TListBox;
+    StaticText1: TStaticText;
+    StaticText2: TStaticText;
+    ButtonSave: TButton;
+    StatusBar: TStatusBar;
+    procedure ButtonAddGroupClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure ButtonSaveClick(Sender: TObject);
+    procedure ListBoxGroupsDblClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+
+
+var
+  FormWidgetsGroups: TFormWidgetsGroups;
+  iniFile:TextFile;
+  oneWidget:TWidget;
+
+implementation
+
+{$R *.dfm}
+
+procedure TFormWidgetsGroups.ButtonAddGroupClick(Sender: TObject);
+
+Var strItem:string;
+begin
+    strItem := Trim(EditGroupName.Text);
+  if ListBoxGroups.Items.IndexOf(strItem) < 0 then
+      ListBoxGroups.Items.Add(EditGroupName.text);
+
+end;
+
+procedure TFormWidgetsGroups.ButtonSaveClick(Sender: TObject);
+begin
+
+  ListBoxGroups.Items[ ListBoxGroups.itemindex ] :=
+    EditGroupName.Text;
+end;
+
+procedure TFormWidgetsGroups.FormClose(Sender: TObject;
+            var Action: TCloseAction);
+var
+    Ini: TIniFile;
+    I: Integer;
+begin
+   try
+    Ini := TIniFile.Create( iniFileName );
+     //Save the last window state
+//     Ini.WriteInteger( 'Form', 'Top', Top);
+//     Ini.WriteInteger( 'Form', 'Left', Left);
+     //Ini.WriteString( 'Form', 'Caption', Caption );
+//     Ini.WriteBool( 'Form', 'InitMax', WindowState = wsMaximized );
+
+
+      if ListBoxGroups.items.Count > 0 then
+      begin
+        ini.EraseSection(iniWidgetsGroupsSection);
+        for I := 0 to ListBoxGroups.items.Count - 1 do
+          if ListBoxGroups.items[I] <> '' then
+              ini.WriteString(iniWidgetsGroupsSection,
+                  ListBoxGroups.items[I], '');
+        ini.UpdateFile;
+      end;
+
+   finally
+     Ini.Free;
+   end;
+
+end;
+
+procedure TFormWidgetsGroups.FormCreate(Sender: TObject);
+
+//var
+   //Ini: TIniFile;
+   //stringListGroups: TStringList;
+   ////stringListWidgets: TStringList;
+
+var
+    MyButton:TMyButton;
+    //MyLabel:TMyLabel;
+begin
+  MyButton:=TMyButton.Create(self);
+  StatusBar.SimpleText:=MyButton.loadGroupIni(ListBoxGroups);
+  //MyLabel:=TMyLabel.Create(ScrollBoxWidgets);
+
+  //CreateTypesList(ListBoxTypes);
+  //MyButton.loadWidgetsIni(ScrollBoxWidgets, ListBoxTypes);
+
+   {
+   try
+      Ini := TIniFile.Create( iniFileName );
+
+     //Initionalize the last window state
+     Top     := Ini.ReadInteger( 'Form', 'Top', 100 );
+     Left    := Ini.ReadInteger( 'Form', 'Left', 100 );
+
+     if Ini.ReadBool( 'Form', 'InitMax', false ) then
+       WindowState := wsMaximized
+     else
+       WindowState := wsNormal;
+
+      stringListGroups:=TStringList.Create();
+      Ini.ReadSectionValues('widgetsGroups', stringListGroups);
+      ListBoxGroups.Items.AddStrings(stringListGroups);
+
+      //oneWidget:=TWidget.Create(self);
+      //stringListWidgets:=TStringList.Create();
+
+   finally
+     Ini.Free;
+   end;
+   }
+
+
+end;
+
+procedure TFormWidgetsGroups.ListBoxGroupsDblClick(Sender: TObject);
+begin
+  FormGroup.Show((Sender as TListBox).Items.Strings[(Sender as TListBox).ItemIndex]);
+  {
+  if FormWidgetsGroups=nil then
+      FormWidgetsGroups:=TFormWidgetsGroups.Create(self);
+  FormWidgetsGroups.Show;
+  }
+end;
+
+end.

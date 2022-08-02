@@ -1,0 +1,17 @@
+program IncrediBuild;
+
+uses
+  Vcl.Forms,
+  FormWidgets in 'FormWidgets.pas' {Form1},
+  Widget in 'Widget.pas',
+  WidgetsGroups in 'WidgetsGroups.pas' {FormWidgetsGroups};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TFormWidgetsGroups, FormWidgetsGroups);
+  Application.Run;
+end.

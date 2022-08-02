@@ -1,0 +1,91 @@
+object Form1: TForm1
+  Left = 0
+  Top = 0
+  Caption = 'Widgets'
+  ClientHeight = 387
+  ClientWidth = 624
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  Menu = MainMenu1
+  OnClose = FormClose
+  OnCreate = FormCreate
+  TextHeight = 15
+  object Splitter1: TSplitter
+    Left = 241
+    Top = 0
+    Height = 368
+    ExplicitLeft = 248
+    ExplicitTop = 80
+    ExplicitHeight = 100
+  end
+  object Panel00: TPanel
+    Left = 244
+    Top = 0
+    Width = 380
+    Height = 368
+    Align = alClient
+    TabOrder = 0
+    object ScrollBoxWidgets: TScrollBox
+      Left = 1
+      Top = 1
+      Width = 378
+      Height = 366
+      Align = alClient
+      TabOrder = 0
+      ExplicitLeft = 24
+      ExplicitTop = 24
+      ExplicitWidth = 185
+      ExplicitHeight = 41
+    end
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 368
+    Width = 624
+    Height = 19
+    BiDiMode = bdLeftToRight
+    Panels = <>
+    ParentBiDiMode = False
+    SimplePanel = True
+  end
+  object Panel2: TPanel
+    Left = 0
+    Top = 0
+    Width = 241
+    Height = 368
+    Align = alLeft
+    Caption = 'Panel2'
+    TabOrder = 2
+    object ListBoxControls: TListBox
+      Left = 1
+      Top = 26
+      Width = 239
+      Height = 341
+      Align = alClient
+      ItemHeight = 15
+      TabOrder = 0
+    end
+    object ButtonWidget: TButton
+      Left = 1
+      Top = 1
+      Width = 239
+      Height = 25
+      Align = alTop
+      Caption = 'Create Widget of selected  type'
+      TabOrder = 1
+      OnClick = ButtonWidgetClick
+    end
+  end
+  object MainMenu1: TMainMenu
+    Left = 260
+    Top = 48
+    object Groups1: TMenuItem
+      Caption = 'Groups'
+      OnClick = Groups1Click
+    end
+  end
+end
